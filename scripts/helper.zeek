@@ -134,17 +134,17 @@ function typeSpecification_to_string(ts: TypeSpecification, fieldName: string &d
     }
 
     if(ts ?$ boolean) {
-        val_t = "bool";
+        val_t = "boolean";
     } else if(ts ?$ bit_string) {
-        val_t = "bitString";
+        val_t = "bit_string";
     } else if(ts ?$ integer) {
         val_t = "integer";
     } else if(ts ?$ unsigned) {
         val_t = "unsigned";
     } else if(ts ?$ octet_string) {
-        val_t = "octetString";
+        val_t = "octet_string";
     } else if(ts ?$ visible_string) {
-        val_t = "visibleString";
+        val_t = "visible_string";
     } else {
         val_t = "<unknown>";
     }
