@@ -23,7 +23,13 @@ export {
 
 event zeek_init() &priority=5
 {
-    Log::create_stream(mms::LOG_VAA, [$columns = VAA, $ev = log_mms_var_attributes, $path="mms_var_attributes"]);
+    Log::create_stream(mms::LOG_VAA,
+        [$columns = VAA,
+        $ev = log_mms_var_attributes,
+        $path="mms_var_attributes",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event VariableAccessAttributes(c: connection, request: GetVariableAccessAttributes_Request, response: GetVariableAccessAttributes_Response) {

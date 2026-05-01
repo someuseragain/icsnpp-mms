@@ -26,7 +26,10 @@ event zeek_init() &priority=5
     Log::create_stream(mms::LOG_VARLIST_ATTR,
         [$columns = VarListAttributes,
         $ev = log_mms_log_varlist_attributes,
-        $path="mms_varlist_attributes"]);
+        $path="mms_varlist_attributes",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event NamedVariableListAttributes(c: connection, request: GetNamedVariableListAttributes_Request, response: GetNamedVariableListAttributes_Response) {

@@ -25,7 +25,13 @@ export {
 
 event zeek_init() &priority=5
 {
-    Log::create_stream(mms::LOG_NAMELIST, [$columns = NameListRecord, $ev = log_mms_name_list, $path="mms_name_list"]);
+    Log::create_stream(mms::LOG_NAMELIST,
+        [$columns = NameListRecord,
+        $ev = log_mms_name_list,
+        $path="mms_name_list",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event NameList(c: connection, request: GetNameList_Request, response: GetNameList_Response) {

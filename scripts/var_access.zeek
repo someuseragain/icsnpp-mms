@@ -37,8 +37,20 @@ export {
 
 event zeek_init() &priority=5
 {
-    Log::create_stream(mms::LOG_VAR_ACCESS, [$columns = VariableAccess, $ev = log_mms_var_access, $path="mms_var_access"]);
-    Log::create_stream(mms::LOG_VARLIST_ACCESS, [$columns = VariableListAccess, $ev = log_mms_varlist_access, $path="mms_varlist_access"]);
+    Log::create_stream(mms::LOG_VAR_ACCESS,
+        [$columns = VariableAccess,
+        $ev = log_mms_var_access,
+        $path="mms_var_access",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
+    Log::create_stream(mms::LOG_VARLIST_ACCESS,
+        [$columns = VariableListAccess,
+        $ev = log_mms_varlist_access,
+        $path="mms_varlist_access",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event VariableReadResponse(c: connection, name: ObjectName, data: Data) {
