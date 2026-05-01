@@ -23,6 +23,14 @@ export {
     };
 
     global log_mms: event(rec: Info);
+
+    ## The maximum number of bytes that a single string field can contain when
+	## logging. If a string reaches this limit, the log output for the field will be
+	## truncated. Setting this to zero disables the limiting. MMS has no maximum
+	## length for various fields such as the value, so this is set to zero by default.
+	##
+	## .. zeek:see:: Log::default_max_field_string_bytes
+	const default_max_field_string_bytes = 0 &redef;
 }
 
 function get_info(c: connection): Info {
@@ -38,7 +46,13 @@ function get_info(c: connection): Info {
 
 event zeek_init() &priority=5
 {
-    Log::create_stream(mms::LOG, [$columns = Info, $ev = log_mms, $path="mms"]);
+    Log::create_stream(mms::LOG,
+        [$columns = Info,
+        $ev = log_mms,
+        $path="mms",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event IdentifyResponse(c: connection, id: Identify_Response) {

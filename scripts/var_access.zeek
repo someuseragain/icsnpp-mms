@@ -33,12 +33,32 @@ export {
     global log_mms_varlist_access: event(rec: VariableListAccess);
 
     const log_var_access: bool = T &redef;
+
+	## The maximum number of bytes that a single string field can contain when
+	## logging. If a string reaches this limit, the log output for the field will be
+	## truncated. Setting this to zero disables the limiting. MMS has no maximum
+	## length for various fields such as the value, so this is set to zero by default.
+	##
+	## .. zeek:see:: Log::default_max_field_string_bytes
+	const default_max_field_string_bytes = 0 &redef;
 }
 
 event zeek_init() &priority=5
 {
-    Log::create_stream(mms::LOG_VAR_ACCESS, [$columns = VariableAccess, $ev = log_mms_var_access, $path="mms_var_access"]);
-    Log::create_stream(mms::LOG_VARLIST_ACCESS, [$columns = VariableListAccess, $ev = log_mms_varlist_access, $path="mms_varlist_access"]);
+    Log::create_stream(mms::LOG_VAR_ACCESS,
+        [$columns = VariableAccess,
+        $ev = log_mms_var_access,
+        $path="mms_var_access",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
+    Log::create_stream(mms::LOG_VARLIST_ACCESS,
+        [$columns = VariableListAccess,
+        $ev = log_mms_varlist_access,
+        $path="mms_varlist_access",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event VariableReadResponse(c: connection, name: ObjectName, data: Data) {

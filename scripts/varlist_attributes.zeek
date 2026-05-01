@@ -19,6 +19,14 @@ export {
     global log_mms_log_varlist_attributes: event(rec: VarListAttributes);
 
     const log_varlist_attributes: bool = T &redef;
+
+    ## The maximum number of bytes that a single string field can contain when
+	## logging. If a string reaches this limit, the log output for the field will be
+	## truncated. Setting this to zero disables the limiting. MMS has no maximum
+	## length for various fields such as the value, so this is set to zero by default.
+	##
+	## .. zeek:see:: Log::default_max_field_string_bytes
+	const default_max_field_string_bytes = 0 &redef;
 }
 
 event zeek_init() &priority=5
@@ -26,7 +34,10 @@ event zeek_init() &priority=5
     Log::create_stream(mms::LOG_VARLIST_ATTR,
         [$columns = VarListAttributes,
         $ev = log_mms_log_varlist_attributes,
-        $path="mms_varlist_attributes"]);
+        $path="mms_varlist_attributes",
+        $max_field_string_bytes=mms::default_max_field_string_bytes
+        ]
+    );
 }
 
 event NamedVariableListAttributes(c: connection, request: GetNamedVariableListAttributes_Request, response: GetNamedVariableListAttributes_Response) {
