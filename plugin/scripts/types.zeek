@@ -337,11 +337,11 @@ export {
 
   type Read_Request: record {
     specificationWithResult: bool;
-    variableAccessSpecificatn: VariableAccessSpecification;
+    variableAccessSpecification: VariableAccessSpecification;
   };
 
   type Write_Request: record {
-    variableAccessSpecificatn: VariableAccessSpecification;
+    variableAccessSpecification: VariableAccessSpecification;
     listOfData: vector of Data;
   };
 
@@ -1076,7 +1076,7 @@ export {
   };
 
   type Read_Response: record {
-    variableAccessSpecificatn: VariableAccessSpecification &optional;
+    variableAccessSpecification: VariableAccessSpecification &optional;
     listOfAccessResult: vector of AccessResult;
   };
 
