@@ -187,13 +187,13 @@ event readRequest(c: connection, invokeID: int, pdu: Read_Request) {
     if (! pdu $ specificationWithResult) {
         c $ mms_read_requests[invokeID] = pdu;
     }
-    if (pdu $ variableAccessSpecificatn ?$ listOfVariable) {
-        for (i in pdu $ variableAccessSpecificatn $ listOfVariable) {
-            event VariableReadRequest(c, pdu $ variableAccessSpecificatn $ listOfVariable[i] $ variableSpecification $ name);
+    if (pdu $ variableAccessSpecification ?$ listOfVariable) {
+        for (i in pdu $ variableAccessSpecification $ listOfVariable) {
+            event VariableReadRequest(c, pdu $ variableAccessSpecification $ listOfVariable[i] $ variableSpecification $ name);
         }
     }
-    if (pdu $ variableAccessSpecificatn ?$ variableListName) {
-        event VariableListReadRequest(c, pdu $ variableAccessSpecificatn $ variableListName);
+    if (pdu $ variableAccessSpecification ?$ variableListName) {
+        event VariableListReadRequest(c, pdu $ variableAccessSpecification $ variableListName);
     }
 }
 
@@ -207,8 +207,8 @@ event readResponse(c: connection, invokeID: int, pdu: Read_Response) {
     # we are using it
     local name: ObjectName;
     local vas = invokeID in c $ mms_read_requests
-       ? c $ mms_read_requests[invokeID] $ variableAccessSpecificatn
-       : pdu $ variableAccessSpecificatn;
+       ? c $ mms_read_requests[invokeID] $ variableAccessSpecification
+       : pdu $ variableAccessSpecification;
     for (i in pdu $ listOfAccessResult) {
         if(vas ?$ listOfVariable) {
             name = vas $ listOfVariable[i] $ variableSpecification $ name;
@@ -234,17 +234,17 @@ event readResponse(c: connection, invokeID: int, pdu: Read_Response) {
 # =====================================================================
 event writeRequest(c: connection, invokeID: int, pdu: Write_Request) {
     c $ mms_write_requests[invokeID] = pdu;
-    for (i in pdu $ variableAccessSpecificatn $ listOfVariable) {
+    for (i in pdu $ variableAccessSpecification $ listOfVariable) {
         event VariableWriteRequest(
             c,
-            pdu $ variableAccessSpecificatn $ listOfVariable[i] $ variableSpecification $ name,
+            pdu $ variableAccessSpecification $ listOfVariable[i] $ variableSpecification $ name,
             pdu $ listOfData[i]
         );
     }
-    if (pdu $ variableAccessSpecificatn ?$ variableListName) {
+    if (pdu $ variableAccessSpecification ?$ variableListName) {
         event VariableListWriteRequest(
             c,
-            pdu $ variableAccessSpecificatn $ variableListName,
+            pdu $ variableAccessSpecification $ variableListName,
             pdu $ listOfData[0]
         );
     }
@@ -256,15 +256,15 @@ event writeResponse(c: connection, invokeID: int, pdu: Write_Response) {
     local request = c $ mms_write_requests[invokeID];
     local name: ObjectName;
     for(i in pdu) {
-        if(request $ variableAccessSpecificatn ?$ listOfVariable) {
-            name = request $ variableAccessSpecificatn $ listOfVariable[i] $ variableSpecification $ name;
+        if(request $ variableAccessSpecification ?$ listOfVariable) {
+            name = request $ variableAccessSpecification $ listOfVariable[i] $ variableSpecification $ name;
             if(pdu[i] ?$ success) {
                 event VariableWriteResponse(c, name, request $ listOfData[i]);
             } else {
                 event VariableWriteResponseError(c, name, request $ listOfData[i], pdu[i] $ failure);
             }
         } else {
-            name = request $ variableAccessSpecificatn $ variableListName;
+            name = request $ variableAccessSpecification $ variableListName;
             if(pdu[i] ?$ success) {
                 event VariableListWriteResponse(c, name, i, request $ listOfData[i]);
             } else {
